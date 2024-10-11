@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./db");
 const authRoutes = require("./routes/authRoute");
+const templateRoute = require("./routes/templateRoute");
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(cors(corsOptions));
 connectDB();
 
 app.use("/api/auth", authRoutes);
+app.use("/api", templateRoute);
 
 app.listen(PORT, () => {
   console.log(`Application listening on port ${PORT}!`);
