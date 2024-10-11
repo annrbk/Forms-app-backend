@@ -44,3 +44,18 @@ exports.createTemplate = async (req, res) => {
     return res.status(500).json({ message: "Error creating template" });
   }
 };
+
+exports.getUserTemplates = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const templates = await Template.find({ authorId: req.user._id });
+
+    return res.status(200).json(templates);
+  } catch (error) {
+    console.error("Error fetching templates:", error);
+    return res.status(500).json({ message: "Error fetching templates" });
+  }
+};
