@@ -59,3 +59,18 @@ exports.getUserTemplates = async (req, res) => {
     return res.status(500).json({ message: "Error fetching templates" });
   }
 };
+
+exports.getUserTemplate = async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id).populate(
+      "questions"
+    );
+    if (!template) {
+      return res.status(404).json({ message: "Template not found" });
+    }
+    return res.status(200).json(template);
+  } catch (error) {
+    console.error("Error fetching template:", error);
+    return res.status(500).json({ message: "Error fetching template" });
+  }
+};
