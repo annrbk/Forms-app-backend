@@ -3,7 +3,7 @@ const { hashPassword } = require("../utils/hashPassword");
 const { generateToken } = require("../utils/token");
 
 exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   const hashedPassword = hashPassword(password);
 
   try {
@@ -16,6 +16,7 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      role,
     });
 
     await newUser.save();
@@ -40,10 +41,13 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = generateToken(user._id);
-    return res
-      .status(200)
-      .json({ message: "Login successful", token, userId: user._id });
+    const token = generateToken(user._id, user.role);
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      userId: user._id,
+      role: user.role,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }

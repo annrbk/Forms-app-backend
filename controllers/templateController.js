@@ -52,7 +52,6 @@ exports.getUserTemplates = async (req, res) => {
     }
 
     const templates = await Template.find({ authorId: req.user._id });
-
     return res.status(200).json(templates);
   } catch (error) {
     console.error("Error fetching templates:", error);

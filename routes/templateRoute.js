@@ -9,6 +9,6 @@ const { authenticateToken } = require("../middleware/authMiddleware");
 
 router.post("/create-template", authenticateToken, createTemplate);
 router.get("/user-templates", authenticateToken, getUserTemplates);
-router.get("/templates/:id", authenticateToken, getUserTemplate);
+router.get("/:id", authenticateToken, getUserTemplate);
 
 module.exports = router;

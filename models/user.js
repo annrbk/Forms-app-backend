@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
   name: {
     type: String,
     required: true,
@@ -18,6 +23,10 @@ const userSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false,
   },
 });
 
