@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const templateSchema = new mongoose.Schema({
+  author: {
+    type: String,
+    required: true,
+  },
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -23,6 +27,10 @@ const templateSchema = new mongoose.Schema({
       ref: "Question",
     },
   ],
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("Template", templateSchema);

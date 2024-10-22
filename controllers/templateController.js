@@ -6,12 +6,13 @@ exports.createTemplate = async (req, res) => {
     if (!req.user || !req.user._id) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+    console.log("Request body:", req.body);
 
     const { title, description, isPublic, questions } = req.body;
-    console.log("Request body:", req.body);
 
     const newTemplate = new Template({
       authorId: req.user._id,
+      author: req.body.author || "No name",
       title,
       description,
       isPublic,
@@ -64,12 +65,22 @@ exports.getUserTemplate = async (req, res) => {
     const template = await Template.findById(req.params.id).populate(
       "questions"
     );
-    if (!template) {
-      return res.status(404).json({ message: "Template not found" });
-    }
+    // if (!template) {
+    //   return res.status(404).json({ message: "Template not found" });
+    // }
     return res.status(200).json(template);
   } catch (error) {
     console.error("Error fetching template:", error);
     return res.status(500).json({ message: "Error fetching template" });
+  }
+};
+
+exports.getLatestTemplates = async (req, res) => {
+  try {
+    const templates = await Template.find().sort({ date: -1 }).limit(5);
+    return res.status(200).json(templates);
+  } catch (error) {
+    console.error("Error fetching latest templates", error);
+    return res.status(500).json({ message: "Error fetching latest templates" });
   }
 };
