@@ -20,7 +20,6 @@ exports.createTemplate = async (req, res) => {
     });
 
     const saveTemplate = await newTemplate.save();
-    console.log("Template saved:", saveTemplate);
 
     const saveQuestions = await Promise.all(
       questions.map(async (question) => {
@@ -65,9 +64,9 @@ exports.getUserTemplate = async (req, res) => {
     const template = await Template.findById(req.params.id).populate(
       "questions"
     );
-    // if (!template) {
-    //   return res.status(404).json({ message: "Template not found" });
-    // }
+    if (!template) {
+      return res.status(404).json({ message: "Template not found" });
+    }
     return res.status(200).json(template);
   } catch (error) {
     console.error("Error fetching template:", error);
@@ -88,7 +87,7 @@ exports.getLatestTemplates = async (req, res) => {
 exports.editTemplate = async (req, res) => {
   const { id } = req.params;
   const { questions } = req.body;
-  console.log(questions);
+
   try {
     const template = await Template.findById(id).populate("questions");
 
@@ -100,7 +99,6 @@ exports.editTemplate = async (req, res) => {
       questions.map(async (question) => {
         if (question.id) {
           oldQuestion = Question.findById(question.id);
-          console.log("Updated question:", oldQuestion, question);
           const updatedQuestion = await Question.findByIdAndUpdate(
             question.id,
             {
@@ -112,7 +110,7 @@ exports.editTemplate = async (req, res) => {
               runValidators: true,
             }
           );
-          console.log("Updated question:", updatedQuestion);
+          return updatedQuestion;
         } else {
           const newQuestion = new Question({
             templateId: id,
@@ -124,7 +122,7 @@ exports.editTemplate = async (req, res) => {
         }
       })
     );
-
+    template.questions = updatedQuestions;
     await template.save();
 
     res.status(200).json(template);

@@ -10,11 +10,7 @@ const {
   deleteTemplate,
 } = require("../controllers/templateController");
 const { authenticateToken } = require("../middleware/authMiddleware");
-
-const corsOptions = {
-  origin: process.env.CORS_LINK,
-  optionsSuccessStatus: 200,
-};
+const { corsOptions } = require("../middleware/corsMiddleware");
 
 const middlewares = [cors(corsOptions), authenticateToken];
 

@@ -10,11 +10,7 @@ const {
 } = require("../controllers/adminController");
 
 const { authAndCheckAdmin } = require("../middleware/adminMiddleware");
-
-const corsOptions = {
-  origin: process.env.CORS_LINK,
-  optionsSuccessStatus: 200,
-};
+const { corsOptions } = require("../middleware/corsMiddleware");
 
 const middlewares = [cors(corsOptions), authAndCheckAdmin];
 

@@ -1,10 +1,8 @@
 const User = require("../models/user");
 
 exports.getUsers = async (req, res) => {
-  console.log("getUsers function called");
   try {
     const users = await User.find();
-    console.log(users);
     return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: "Error fetching users" });
@@ -75,7 +73,6 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(userId);
     if (!user) {
-      console.log("User not found");
       return res.status(404).send("User not found");
     }
     res.status(200).send("User deleted successfully");

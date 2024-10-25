@@ -1,12 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const cors = require("cors");
+const { corsOptions } = require("../middleware/corsMiddleware");
 const { registerUser, loginUser } = require("../controllers/authController");
-
-const corsOptions = {
-  origin: process.env.CORS_LINK,
-  optionsSuccessStatus: 200,
-};
 
 router.post("/register", cors(corsOptions), registerUser);
 
