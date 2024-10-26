@@ -34,7 +34,7 @@ exports.loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid username or password" }); //"Invalid email"
     }
 
     if (user.password !== hashedPassword) {

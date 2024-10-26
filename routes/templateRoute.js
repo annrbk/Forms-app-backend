@@ -18,7 +18,7 @@ router.get("/latest-templates", getLatestTemplates);
 
 router.post("/create-template", middlewares, createTemplate);
 router.get("/user-templates", middlewares, getUserTemplates);
-router.get("/:id", middlewares, getUserTemplate);
+router.get("/user-template/:id", middlewares, getUserTemplate);
 router.put("/:id", middlewares, editTemplate);
 router.delete("/:templateId", middlewares, deleteTemplate);
 
