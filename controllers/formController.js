@@ -88,3 +88,22 @@ exports.deleteForm = async (req, res) => {
     res.status(500).json({ message: "Error deleting form" });
   }
 };
+
+exports.getUserForm = async (req, res) => {
+  try {
+    const form = await Form.findById(req.params.id)
+      .populate({
+        path: "answers",
+        populate: {
+          path: "questionId",
+        },
+      })
+      .populate("templateId");
+    if (!form) {
+      return res.status(404).json({ message: "Form not found" });
+    }
+    return res.status(200).json(form);
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching form" });
+  }
+};
