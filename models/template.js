@@ -27,6 +27,12 @@ const templateSchema = new mongoose.Schema({
       ref: "Question",
     },
   ],
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tag",
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,

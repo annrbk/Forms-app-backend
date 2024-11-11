@@ -16,16 +16,16 @@ exports.roleChange = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     user.role = role;
     await user.save();
 
-    res.status(200).send("Role changed successfully");
+    res.status(200).json({ message: "Role changed successfully" });
   } catch (error) {
     console.error("Error role change:", error);
-    res.status(500).send("Error role change");
+    res.status(500).json({ message: "Error role change" });
   }
 };
 
@@ -35,16 +35,16 @@ exports.blockUser = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     user.isBlocked = true;
     await user.save();
 
-    res.status(200).send("User blocked successfully");
+    res.status(200).json({ message: "User blocked successfully" });
   } catch (error) {
     console.error("Error blocking user:", error);
-    res.status(500).send("Error blocking user");
+    res.status(500).json({ message: "Error blocking user" });
   }
 };
 
@@ -54,16 +54,16 @@ exports.unBlockUser = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     user.isBlocked = false;
     await user.save();
 
-    res.status(200).send("User unblocked successfully");
+    res.status(200).json({ message: "User unblocked successfully" });
   } catch (error) {
     console.error("Error unblocking user:", error);
-    res.status(500).send("Error unblocking user");
+    res.status(500).json({ message: "Error unblocking user" });
   }
 };
 
@@ -73,11 +73,11 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(userId);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).send("User deleted successfully");
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.error("Error delete user:", error);
-    res.status(500).send("Error delete user");
+    res.status(500).json({ message: "Error delete user" });
   }
 };

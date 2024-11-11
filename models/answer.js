@@ -6,7 +6,6 @@ const answerSchema = new mongoose.Schema({
     ref: "Question",
     required: true,
   },
-
   answer: {
     type: String,
     required: true,
