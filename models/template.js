@@ -33,6 +33,12 @@ const templateSchema = new mongoose.Schema({
       ref: "Tag",
     },
   ],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
