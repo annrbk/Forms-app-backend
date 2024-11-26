@@ -2,6 +2,7 @@ const Form = require("../models/form");
 const Answer = require("../models/answer");
 const Question = require("../models/question");
 const Template = require("../models/template");
+const User = require("../models/user");
 
 exports.completedForm = async (req, res) => {
   try {
@@ -13,7 +14,9 @@ exports.completedForm = async (req, res) => {
 
     const template = await Template.findById(templateId);
     const title = template.title;
-    const author = req.user.name || "Unknown author";
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    const author = user.name;
 
     const newForm = new Form({
       author: author,
