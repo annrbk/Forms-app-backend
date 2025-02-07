@@ -32,7 +32,6 @@ exports.completedForm = async (req, res) => {
       answers.map(async (answer) => {
         const newAnswer = new Answer({
           questionId: answer.questionId,
-          title: answer.title,
           answer: answer.answer,
         });
         return await newAnswer.save();

@@ -1,6 +1,7 @@
 const Template = require("../models/template");
 const Question = require("../models/question");
 const Tag = require("../models/tag");
+const Checkbox = require("../models/checkbox");
 const mongoose = require("mongoose");
 
 exports.createTemplate = async (req, res) => {
@@ -31,25 +32,46 @@ exports.createTemplate = async (req, res) => {
           label: question.label,
           required: question.required,
         });
+
+        if (question.type === "checkbox") {
+          const savedCheckboxes = await Promise.all(
+            question.checkboxList.map(async (checkbox) => {
+              const newCheckbox = new Checkbox({
+                value: checkbox.value,
+              });
+              const savedCheckbox = await newCheckbox.save();
+              return savedCheckbox._id;
+            })
+          );
+
+          newQuestion.checkboxList = savedCheckboxes;
+        }
         return await newQuestion.save();
       })
     );
 
     const saveTags = await Promise.all(
-      tags.map(async (tag) => {
-        const newTag = new Tag({
-          templateId: saveTemplate._id,
-          name: tag,
-        });
-        return await newTag.save();
+      tags.map(async (tagName) => {
+        let tag = await Tag.findOne({ name: tagName });
+        if (!tag) {
+          tag = new Tag({
+            name: tagName,
+            templateId: saveTemplate._id,
+          });
+          await tag.save();
+        }
+        return tag._id;
       })
     );
 
-    const questionIds = saveQuestions.map((question) => question._id);
-    saveTemplate.questions = questionIds;
+    await Promise.all(
+      saveTags.map(async (tagId) => {
+        await Tag.findByIdAndUpdate(tagId, { $inc: { usageCount: 1 } });
+      })
+    );
 
-    const tagIds = saveTags.map((tag) => tag._id);
-    saveTemplate.tags = tagIds;
+    saveTemplate.questions = saveQuestions.map((question) => question._id);
+    saveTemplate.tags = saveTags;
 
     await saveTemplate.save();
 
@@ -79,7 +101,7 @@ exports.getUserTemplates = async (req, res) => {
 exports.getUserTemplate = async (req, res) => {
   try {
     const template = await Template.findById(req.params.id)
-      .populate("questions")
+      .populate({ path: "questions", populate: { path: "checkboxList" } })
       .populate("tags");
     if (!template) {
       return res.status(404).json({ message: "Template not found" });
@@ -100,54 +122,6 @@ exports.getLatestTemplates = async (req, res) => {
   } catch (error) {
     console.error("Error fetching latest templates", error);
     return res.status(500).json({ message: "Error fetching latest templates" });
-  }
-};
-
-exports.editTemplate = async (req, res) => {
-  const { id } = req.params;
-  const { questions } = req.body;
-
-  try {
-    const template = await Template.findById(id).populate("questions");
-
-    if (!template) {
-      return res.status(404).json({ message: "Template not found" });
-    }
-
-    const updatedQuestions = await Promise.all(
-      questions.map(async (question) => {
-        if (question.id) {
-          oldQuestion = Question.findById(question.id);
-          const updatedQuestion = await Question.findByIdAndUpdate(
-            question.id,
-            {
-              label: question.label,
-              type: oldQuestion.type,
-            },
-            {
-              new: true,
-              runValidators: true,
-            }
-          );
-          return updatedQuestion;
-        } else {
-          const newQuestion = new Question({
-            templateId: id,
-            type: question.type,
-            label: question.label,
-            required: question.required,
-          });
-          return await newQuestion.save();
-        }
-      })
-    );
-    template.questions = updatedQuestions;
-    await template.save();
-
-    res.status(200).json(template);
-  } catch (error) {
-    console.error("Error updating template:", error);
-    res.status(500).json({ message: "Error updating template" });
   }
 };
 
@@ -187,7 +161,7 @@ exports.getAllTemplates = async (req, res) => {
 exports.getTemplatesByTag = async (req, res) => {
   try {
     const templates = await Template.find({
-      tag: req.params.tagId,
+      tags: req.params.tagId,
     });
     return res.status(200).json(templates);
   } catch (error) {

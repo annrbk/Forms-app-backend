@@ -10,6 +10,7 @@ const formRoute = require("./routes/formRoute");
 const tagRoute = require("./routes/tagRoute");
 const commentRoute = require("./routes/commentRoute");
 const wsComment = require("./websocket/comment");
+const questionRoute = require("./routes/questionRoute");
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use("/api/admin", adminRoute);
 app.use("/api/form", formRoute);
 app.use("/api/tags", tagRoute);
 app.use("/api/comments", commentRoute);
+app.use("/api/questions", questionRoute);
 
 const server = http.createServer(app);
 

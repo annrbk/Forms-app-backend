@@ -6,7 +6,6 @@ const {
   getUserTemplates,
   getUserTemplate,
   getLatestTemplates,
-  editTemplate,
   deleteTemplate,
   getAllTemplates,
   getTemplatesByTag,
@@ -23,7 +22,6 @@ router.get("/templates-tag/:tagId", getTemplatesByTag);
 router.post("/create-template", middlewares, createTemplate);
 router.get("/user-templates", middlewares, getUserTemplates);
 router.get("/user-template/:id", middlewares, getUserTemplate);
-router.put("/:id", middlewares, editTemplate);
 router.delete("/:templateId", middlewares, deleteTemplate);
 
 module.exports = router;

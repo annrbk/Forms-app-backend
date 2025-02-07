@@ -19,6 +19,12 @@ const questionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  checkboxList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Checkbox",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Question", questionSchema);
